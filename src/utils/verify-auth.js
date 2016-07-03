@@ -7,13 +7,14 @@ import { addAuthorizationHeader }             from './fetch';
 import { parseHeaders,areHeadersBlank }       from './headers'
 import { getApiUrl, getTokenValidationPath }  from './session-storage';
 
-export function fetchToken({ cookies, currentLocation} ) {
+export function fetchToken({ cookies, currentLocation, apiUrl, tokenValidationPath } ) {
   const { authRedirectHeaders } = getRedirectInfo(url.parse(currentLocation));
 
   return new Promise((resolve, reject) => {
     if (cookies || authRedirectHeaders) {
       const rawCookies    = cookie.parse(cookies || '{}');
       const parsedCookies = JSON.parse(rawCookies.authHeaders || 'false');
+
       let headers;
 
       if (!areHeadersBlank(authRedirectHeaders)) {
@@ -26,7 +27,10 @@ export function fetchToken({ cookies, currentLocation} ) {
         return reject({ reason: 'No creds' });
       }
 
-      const validationUrl = `${getApiUrl()}${getTokenValidationPath()}?unbatch=true`;
+      const resolvedApiUrl    = apiUrl ? apiUrl : getApiUrl();
+      const resolvedTokenUrl  = tokenValidationPath ? tokenValidationPath : getTokenValidationPath();
+
+      const validationUrl = `${resolvedApiUrl}${resolvedTokenUrl}?unbatch=true`;
 
       let newHeaders;
 
@@ -49,18 +53,15 @@ export function fetchToken({ cookies, currentLocation} ) {
   });
 }
 
-function verifyAuth({isServer, cookies, currentLocation}) {
-  return new Promise((resolve, reject) => {
-    if (isServer) {
-      return fetchToken({ cookies, currentLocation})
-        .then(res => resolve(res))
-        .catch(res => reject(res));
-    } else {
-      // TODO: deal with localStorage
-      //Auth.validateToken(getCurrentEndpointKey())
-        //.then((user) => resolve(user.data), (err) => reject({reason: err}));
-    }
-  });
-}
+const verifyAuth = ({ isServer, cookies, currentLocation, apiUrl, tokenValidationPath }) => new Promise((resolve, reject) => {
+  if (isServer) {
+    return fetchToken({ cookies, currentLocation, apiUrl, tokenValidationPath })
+      .then(res => resolve(res))
+      .catch(res => reject(res));
+  }
+  // TODO: deal with localStorage
+  //Auth.validateToken(getCurrentEndpointKey())
+  //.then((user) => resolve(user.data), (err) => reject({reason: err}));
+});
 
 export default verifyAuth;

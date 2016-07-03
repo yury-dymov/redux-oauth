@@ -1,4 +1,4 @@
-import * as C from 'utils/constants';
+import { SAVED_CREDS_KEY }                      from 'utils/constants';
 import { getAllParams, normalizeTokenKeys }     from 'utils/parse-url';
 import { getOAuthUrl }                          from 'utils/session-storage';
 import { getTokenValidationPath, persistData }  from 'utils/session-storage';
@@ -25,7 +25,7 @@ function listenForCredentials(popup, provider, resolve, reject) {
 
   if (creds && creds.uid) {
     popup.close();
-    persistData(C.SAVED_CREDS_KEY, normalizeTokenKeys(creds));
+    persistData(SAVED_CREDS_KEY, normalizeTokenKeys(creds));
     fetch(getTokenValidationPath())
       .then(parseResponse)
       .then(({data}) => resolve(data))

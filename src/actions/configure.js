@@ -6,10 +6,11 @@ import { applyConfig }                                                from 'util
 import { destroySession }                                             from 'utils/session-storage';
 import verifyAuth                                                     from 'utils/verify-auth';
 import getRedirectInfo                                                from 'utils/parse-url';
+import { areHeadersBlank }                                            from 'utils/headers';
 
 import { push }                                                       from 'react-router-redux';
 
-export function configure(settings={}) {
+export function configure(settings = {}) {
   return dispatch => {
     if (settings.currentLocation && settings.currentLocation.match(/blank=true/)) {
       return Promise.resolve({ blank: true });
@@ -50,13 +51,13 @@ export function configure(settings={}) {
         }
       }
 
-      let {authRedirectPath, authRedirectHeaders} = getRedirectInfo(window.location);
+      const { authRedirectPath, authRedirectHeaders } = getRedirectInfo(window.location);
 
       if (authRedirectPath) {
         dispatch(push({ pathname: authRedirectPath }));
       }
 
-      if (authRedirectHeaders && authRedirectHeaders.uid && authRedirectHeaders['access-token']) {
+      if (!areHeadersBlank(authRedirectHeaders)) {
         settings.initialCredentials = assign({}, settings.initialCredentials, authRedirectHeaders);
       }
 

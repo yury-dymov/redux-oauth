@@ -2,6 +2,8 @@ import Cookies              from 'js-cookie';
 import { defaultSettings }  from './client-settings';
 import { SAVED_CREDS_KEY}   from './constants';
 
+import keys                 from 'lodash/keys';
+
 // even though this code shouldn't be used server-side, node will throw
 // errors if "window" is used
 var root = Function("return this")() || (42, eval)("this");
@@ -25,7 +27,7 @@ export function resetConfig () {
 export function destroySession () {
   var sessionKeys = [SAVED_CREDS_KEY];
 
-  for (const key in sessionKeys) {
+  keys(sessionKeys).forEach((key) => {
     const value = sessionKeys[key];
 
     if (root.localStorage) {
@@ -33,7 +35,7 @@ export function destroySession () {
     }
 
     Cookies.remove(value, { path: root.authState.currentSettings.cookiePath || '/' });
-  }
+  });
 }
 
 function unescapeQuotes (val) {
@@ -69,15 +71,15 @@ export function getTokenFormat() {
 }
 
 export function persistData(key, val) {
-  val = JSON.stringify(val);
+  const valInJson = JSON.stringify(val);
 
   switch (root.authState.currentSettings.storage) {
     case 'localStorage':
-      root.localStorage.setItem(key, val);
+      root.localStorage.setItem(key, valInJson);
       break;
 
     default:
-      Cookies.set(key, val, {
+      Cookies.set(key, valInJson, {
         expires: root.authState.currentSettings.cookieExpiry,
         path:    root.authState.currentSettings.cookiePath
       });

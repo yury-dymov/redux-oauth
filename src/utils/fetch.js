@@ -1,7 +1,7 @@
 import originalFetch                    from 'isomorphic-fetch';
 import assign                           from 'lodash/assign';
 
-import { SAVED_CREDS_KEY}               from './constants';
+import { SAVED_CREDS_KEY }              from './constants';
 import {
   getApiUrl,
   retrieveData,
@@ -9,6 +9,8 @@ import {
   getTokenFormat 
 }                                       from './session-storage';
 import { parseHeaders,areHeadersBlank } from './headers'
+
+import keys                             from 'lodash/keys';
 
 const isApiRequest = (url) => url.match(getApiUrl());
 
@@ -23,9 +25,13 @@ function getAuthHeaders(url) {
 
     nextHeaders["If-Modified-Since"] = "Mon, 26 Jul 1997 05:00:00 GMT";
 
-    for (const key in getTokenFormat()) {
-      nextHeaders[key] = currentHeaders[key];
-    }
+    keys(getTokenFormat()).forEach((key) => {
+      const value = currentHeaders[key];
+
+      if (typeof value !== 'undefined') {
+        nextHeaders[key] = currentHeaders[key];
+      }
+    });
 
     return addAuthorizationHeader(currentHeaders['access-token'], nextHeaders);
   } else {
@@ -40,7 +46,7 @@ function updateAuthCredentials(resp) {
     if (!areHeadersBlank(oldHeaders)) {
       const newHeaders = parseHeaders(oldHeaders);
 
-      persistData(C.SAVED_CREDS_KEY, newHeaders);
+      persistData(SAVED_CREDS_KEY, newHeaders);
     }
   }
 

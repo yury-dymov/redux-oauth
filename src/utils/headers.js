@@ -1,27 +1,32 @@
 import { getTokenFormat } from './session-storage';
+import keys               from 'lodash/keys';
+import isArray            from 'lodash/isArray';
 
 export function parseHeaders(headers) {
+  if (!headers) {
+    return;
+  }
+
   const newHeaders  = {};
   const tokenFormat = getTokenFormat();
   let blankHeaders  = true;
+  const isHeaders   = headers.constructor.name === 'Headers';
 
-  for (const key of tokenFormat) {
-    newHeaders[key] = headers[key];
+  keys(tokenFormat).forEach((key) => {
+    newHeaders[key] = isHeaders ? headers.get(key) : headers[key];
 
     if (newHeaders[key]) {
-      if (typeof newHeaders[key] === 'object') {
+      if (isArray(newHeaders[key])) {
         newHeaders[key] = newHeaders[key][0];
       }
 
       blankHeaders = false;
     }
-  }
+  });
 
   if (!blankHeaders) {
     return newHeaders;
   }
-
-  return headers;
 }
 
 export function areHeadersBlank(headers) {
@@ -30,9 +35,14 @@ export function areHeadersBlank(headers) {
   }
 
   const tokenFormat = getTokenFormat();
+  const allKeys     = keys(tokenFormat);
+  const isHeaders   = headers.constructor.name === 'Headers';
 
-  for (const key of tokenFormat) {
-    if (headers[key]) {
+
+  for (let i = 0; i < allKeys.length; ++i) {
+    const value = isHeaders ? headers.has([allKeys[i]]) : typeof headers[allKeys[i]] !== 'undefined';
+
+    if (value) {
       return false;
     }
   }

@@ -45,6 +45,6 @@ function getPopupDimensions(provider) {
   return `width=${width},height=${height},top=${top},left=${left}`;
 }
 
-export default function openPopup(provider, url, name) {
-  return window.open(url, name, `${settings},${getPopupDimensions(provider)}`);
-}
+const openPopup = (provider, url, name) => window.open(url, name, `${settings},${getPopupDimensions(provider)}`);
+
+export default openPopup;

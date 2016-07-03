@@ -56,16 +56,14 @@ const stripKeys = (obj, keys) => {
 
 export function getAllParams (location) {
   return assign({}, getAnchorQs(location), getSearchQs(location));
-};
+}
 
 
-const buildCredentials = (location, keys) => {
+const buildCredentials = (location, providedKeys) => {
   const params = getAllParams(location);
   const authHeaders = {};
 
-  for (const key of keys) {
-    authHeaders[key] = params[key];
-  }
+  keys(providedKeys).forEach((key) => authHeaders[key] = params[key]);
 
   return normalizeTokenKeys(authHeaders);
 };
