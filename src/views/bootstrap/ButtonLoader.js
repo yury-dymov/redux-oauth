@@ -1,7 +1,6 @@
 import React, { PropTypes, Component }  from 'react';
 
 import Button                           from 'react-bootstrap/lib/Button';
-import Glyphicon                        from 'react-bootstrap/lib/Glyphicon';
 import Spinner                          from 'react-loader';
 
 export default class ButtonLoader extends Component {
@@ -17,7 +16,7 @@ export default class ButtonLoader extends Component {
   };
 
   static defaultProps = {
-    icon:           <Glyphicon glyph='heart' />,
+    icon:           null,
     loading:        false,
     spinConfig:     {
       lines:  10,

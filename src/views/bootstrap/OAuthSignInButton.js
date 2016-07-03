@@ -2,9 +2,8 @@ import React, { PropTypes, Component }  from 'react';
 import { connect }                      from 'react-redux';
 
 import ButtonLoader                     from './ButtonLoader';
-import Glyphicon                        from 'react-bootstrap/lib/Glyphicon';
 
-import { oAuthSignIn }                  from '../../actions/oauth-sign-in';
+import { oAuthSignIn }                  from 'actions/oauth-sign-in';
 
 class OAuthSignInButton extends Component {
   static propTypes = {
@@ -17,7 +16,7 @@ class OAuthSignInButton extends Component {
 
   static defaultProps = {
     children: <span>OAuth Sign In</span>,
-    icon:     <Glyphicon glyph='log-in' />
+    icon:     null
   };
   
   handleClick = () => {
