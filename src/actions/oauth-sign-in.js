@@ -1,10 +1,10 @@
-import * as C from '../utils/constants';
-import { getAllParams, normalizeTokenKeys }     from '../utils/parse-url';
-import { getOAuthUrl }                          from '../utils/session-storage';
-import { getTokenValidationPath, persistData }  from '../utils/session-storage';
-import { parseResponse }                        from '../utils/handle-fetch-response';
-import fetch                                    from '../utils/fetch';
-import openPopup                                from '../utils/popup';
+import * as C from 'utils/constants';
+import { getAllParams, normalizeTokenKeys }     from 'utils/parse-url';
+import { getOAuthUrl }                          from 'utils/session-storage';
+import { getTokenValidationPath, persistData }  from 'utils/session-storage';
+import { parseResponse }                        from 'utils/handle-fetch-response';
+import fetch                                    from 'utils/fetch';
+import openPopup                                from 'utils/popup';
 
 export const OAUTH_SIGN_IN_START    = 'OAUTH_SIGN_IN_START';
 export const OAUTH_SIGN_IN_COMPLETE = 'OAUTH_SIGN_IN_COMPLETE';

@@ -17,7 +17,7 @@
   ],
   "main": "dist/bundle.js",
   "scripts": {
-    "release": "node ./node_modules/webpack/bin/webpack.js --verbose --colors --display-error-details --config webpack.release.js -p"
+    "release": "webpack --verbose --colors --display-error-details --config webpack.release.js -p"
   },
   "files": [
     "src",

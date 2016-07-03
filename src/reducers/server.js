@@ -1,6 +1,6 @@
 import Immutable                from "immutable";
 import { createReducer }        from "redux-immutablejs";
-import { SS_AUTH_TOKEN_UPDATE } from "../actions/server";
+import { SS_AUTH_TOKEN_UPDATE } from "actions/server";
 
 const initialState = Immutable.fromJS({
   user:     null,

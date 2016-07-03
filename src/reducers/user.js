@@ -1,10 +1,10 @@
 import Immutable                              from 'immutable';
 import { createReducer }                      from 'redux-immutablejs';
 
-import { SIGN_OUT_COMPLETE, SIGN_OUT_ERROR }  from '../actions/sign-out';
-import { OAUTH_SIGN_IN_COMPLETE }             from '../actions/oauth-sign-in';
-import * as authActions                       from '../actions/authenticate';
-import * as ssActions                         from '../actions/server';
+import { SIGN_OUT_COMPLETE, SIGN_OUT_ERROR }  from 'actions/sign-out';
+import { OAUTH_SIGN_IN_COMPLETE }             from 'actions/oauth-sign-in';
+import * as authActions                       from 'actions/authenticate';
+import * as ssActions                         from 'actions/server';
 
 const initialState = Immutable.fromJS({
   attributes: null,

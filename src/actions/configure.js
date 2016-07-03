@@ -1,10 +1,12 @@
 import assign                                                         from 'lodash/assign';
 import { authenticateStart, authenticateComplete, authenticateError } from './authenticate';
 import { ssAuthTokenUpdate }                                          from './server';
-import { applyConfig }                                                from '../utils/client-settings';
-import { destroySession }                                             from '../utils/session-storage';
-import verifyAuth                                                     from '../utils/verify-auth';
-import getRedirectInfo                                                from '../utils/parse-url';
+
+import { applyConfig }                                                from 'utils/client-settings';
+import { destroySession }                                             from 'utils/session-storage';
+import verifyAuth                                                     from 'utils/verify-auth';
+import getRedirectInfo                                                from 'utils/parse-url';
+
 import { push }                                                       from 'react-router-redux';
 
 export function configure(settings={}) {

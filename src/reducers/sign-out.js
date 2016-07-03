@@ -1,6 +1,6 @@
 import Immutable          from 'immutable';
 import { createReducer }  from 'redux-immutablejs';
-import * as A             from '../actions/sign-out';
+import * as A             from 'actions/sign-out';
 
 const initialState = Immutable.fromJS({
   loading: false,

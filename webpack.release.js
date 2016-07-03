@@ -3,7 +3,6 @@ var path          = require('path');
 var nodeExternals = require('webpack-node-externals');
 
 module.exports = {
-  context: __dirname,
   entry:   [
     './src/index'
   ],
@@ -31,7 +30,7 @@ module.exports = {
     ]
   },
   resolve: {
-    root: 'src',
+    root: path.join(__dirname, 'src'),
     modulesDirectories: [ 'node_modules' ],
     extensions: ['', '.json', '.js']
   }

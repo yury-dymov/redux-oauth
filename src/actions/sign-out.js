@@ -1,6 +1,6 @@
-import { getSignOutUrl, destroySession }  from '../utils/session-storage';
-import { parseResponse }                  from '../utils/handle-fetch-response';
-import fetch                              from '../utils/fetch';
+import { getSignOutUrl, destroySession }  from 'utils/session-storage';
+import { parseResponse }                  from 'utils/handle-fetch-response';
+import fetch                              from 'utils/fetch';
 
 export const SIGN_OUT_START    = 'SIGN_OUT_START';
 export const SIGN_OUT_COMPLETE = 'SIGN_OUT_COMPLETE';

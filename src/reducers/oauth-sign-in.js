@@ -1,6 +1,6 @@
 import Immutable          from 'immutable';
 import { createReducer }  from 'redux-immutablejs';
-import * as A             from '../actions/oauth-sign-in';
+import * as A             from 'actions/oauth-sign-in';
 
 const initialState = Immutable.fromJS({
   loading:  false,
