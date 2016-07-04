@@ -20,6 +20,8 @@ export function addAuthorizationHeader(accessToken, headers) {
 
 function getAuthHeaders(url) {
   if (isApiRequest(url)) {
+    // to make isomorphic: retrieve from currentSettings
+
     const currentHeaders = retrieveData(SAVED_CREDS_KEY) || {};
     const nextHeaders    = {};
 
@@ -40,6 +42,8 @@ function getAuthHeaders(url) {
 }
 
 function updateAuthCredentials(resp) {
+  // to make isomorphic pass dispatch here somehow and ssupdate
+
   if (isApiRequest(resp.url)) {
     const oldHeaders = resp.headers;
 

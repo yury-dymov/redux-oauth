@@ -16,13 +16,6 @@ export default createReducer(initialState, {
     attributes: user,
     isSignedIn: true
   }),
-// ToDo: check while this is not working
-  [ssActions.SS_TOKEN_VALIDATION_COMPLETE]: (state, { user }) => {
-    return state.merge({
-      attributes: user,
-      isSignedIn: true
-    });
-  },
 
   [OAUTH_SIGN_IN_COMPLETE]: (state, { user }) => state.merge({
     attributes: user,
@@ -37,8 +30,6 @@ export default createReducer(initialState, {
   },
 
   [authActions.AUTHENTICATE_FAILURE]:    state => state.merge(initialState),
-// ToDo: check while this is not working
-  [ssActions.SS_TOKEN_VALIDATION_ERROR]: state => state.merge(initialState),
 
   [SIGN_OUT_COMPLETE]:                   state => state.merge(initialState),
   [SIGN_OUT_ERROR]:                      state => state.merge(initialState)
