@@ -2,7 +2,7 @@ import assign                                                         from 'loda
 import { authenticateStart, authenticateComplete, authenticateError } from './authenticate';
 import { ssAuthTokenUpdate }                                          from './server';
 
-import { applyConfig }                                                from 'utils/client-settings';
+import { applyConfig, initSettings }                                  from 'utils/client-settings';
 import { destroySession }                                             from 'utils/session-storage';
 import verifyAuth                                                     from 'utils/verify-auth';
 import getRedirectInfo                                                from 'utils/parse-url';
@@ -21,6 +21,8 @@ export function configure(settings = {}) {
     let promise;
 
     if (settings.isServer) {
+      initSettings(settings);
+
       promise = verifyAuth(settings)
         .then(({ user, headers }) => {
           dispatch(ssAuthTokenUpdate({ headers, user }));
@@ -30,7 +32,7 @@ export function configure(settings = {}) {
         .catch(({ reason }) => {
           dispatch(ssAuthTokenUpdate());
 
-          return Promise.reject({reason});
+          return Promise.reject({ reason });
         });
     } else {
       const tokenBridge = document.getElementById('token-bridge');

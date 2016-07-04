@@ -1,13 +1,13 @@
-import fetch                                  from 'isomorphic-fetch';
-import cookie                                 from 'cookie';
-import url                                    from 'url';
+import fetch                              from 'isomorphic-fetch';
+import cookie                             from 'cookie';
+import url                                from 'url';
 
-import getRedirectInfo                        from './parse-url';
-import { addAuthorizationHeader }             from './fetch';
-import { parseHeaders,areHeadersBlank }       from './headers'
-import { getApiUrl, getTokenValidationPath }  from './session-storage';
+import getRedirectInfo                    from './parse-url';
+import { addAuthorizationHeader }         from './fetch';
+import { parseHeaders,areHeadersBlank }   from './headers'
+import { getTokenValidationPath }         from './session-storage';
 
-export function fetchToken({ cookies, currentLocation, apiUrl, tokenValidationPath } ) {
+export function fetchToken({ cookies, currentLocation } ) {
   const { authRedirectHeaders } = getRedirectInfo(url.parse(currentLocation));
 
   return new Promise((resolve, reject) => {
@@ -27,10 +27,7 @@ export function fetchToken({ cookies, currentLocation, apiUrl, tokenValidationPa
         return reject({ reason: 'No creds' });
       }
 
-      const resolvedApiUrl    = apiUrl ? apiUrl : getApiUrl();
-      const resolvedTokenUrl  = tokenValidationPath ? tokenValidationPath : getTokenValidationPath();
-
-      const validationUrl = `${resolvedApiUrl}${resolvedTokenUrl}?unbatch=true`;
+      const validationUrl = `${getTokenValidationPath()}?unbatch=true`;
 
       let newHeaders;
 
@@ -53,9 +50,9 @@ export function fetchToken({ cookies, currentLocation, apiUrl, tokenValidationPa
   });
 }
 
-const verifyAuth = ({ isServer, cookies, currentLocation, apiUrl, tokenValidationPath }) => new Promise((resolve, reject) => {
+const verifyAuth = ({ isServer, cookies, currentLocation }) => new Promise((resolve, reject) => {
   if (isServer) {
-    return fetchToken({ cookies, currentLocation, apiUrl, tokenValidationPath })
+    return fetchToken({ cookies, currentLocation })
       .then(res => resolve(res))
       .catch(res => reject(res));
   }

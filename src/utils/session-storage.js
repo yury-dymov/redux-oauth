@@ -6,7 +6,7 @@ import keys                 from 'lodash/keys';
 
 // even though this code shouldn't be used server-side, node will throw
 // errors if "window" is used
-var root = Function("return this")() || (42, eval)("this");
+const root = Function("return this")() || (42, eval)("this");
 
 // stateful variables that persist throughout session
 root.authState = { currentSettings: defaultSettings };
@@ -19,13 +19,8 @@ export function getCurrentSettings () {
   return root.authState.currentSettings;
 }
 
-export function resetConfig () {
-  root.authState = root.authState || {};
-  destroySession();
-}
-
 export function destroySession () {
-  var sessionKeys = [SAVED_CREDS_KEY];
+  const sessionKeys = [SAVED_CREDS_KEY];
 
   keys(sessionKeys).forEach((key) => {
     const value = sessionKeys[key];

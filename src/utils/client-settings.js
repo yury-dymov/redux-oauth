@@ -6,8 +6,7 @@ import {
   getCurrentSettings,
   setCurrentSettings,
   retrieveData,
-  persistData,
-  resetConfig
+  persistData
 }                           from './session-storage';
 
 export const defaultSettings = {
@@ -25,12 +24,12 @@ export const defaultSettings = {
   }
 };
 
-export function applyConfig({ settings = {}, reset = false } = {}) {
-  if (reset) {
-    resetConfig();
-  }
-
+export function initSettings(settings) {
   setCurrentSettings(assign({}, defaultSettings, settings));
+}
+
+export function applyConfig({ settings = {} }) {
+  initSettings(settings);
 
   const savedCreds = retrieveData(SAVED_CREDS_KEY);
 
