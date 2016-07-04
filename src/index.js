@@ -7,8 +7,6 @@ import signOut              from './reducers/sign-out';
 import { combineReducers }  from 'redux-immutablejs';
 import verifyAuth           from './utils/verify-auth';
 
-import TokenBridge          from './views/TokenBridge';
-
 export { 
   SignOutButton, 
   OAuthSignInButton, 
@@ -29,6 +27,6 @@ export { signOut }      from './actions/sign-out';
 export { oAuthSignIn }  from './actions/oauth-sign-in';
 export { getApiUrl }    from './utils/session-storage';
 
-export { verifyAuth, TokenBridge, authStateReducer };
+export { verifyAuth, authStateReducer };
 
 export { default as fetch } from './utils/fetch';

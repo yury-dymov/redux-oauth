@@ -1,17 +1,20 @@
 import originalFetch                    from 'isomorphic-fetch';
 import assign                           from 'lodash/assign';
+import keys                             from 'lodash/keys';
 
 import { SAVED_CREDS_KEY }              from './constants';
 import {
   getApiUrl,
   retrieveData,
   persistData,
+  getCurrentSettings,
   getTokenFormat 
 }                                       from './session-storage';
 import { parseHeaders,areHeadersBlank } from './headers';
 import { getAccessToken }               from './client-settings';
 
-import keys                             from 'lodash/keys';
+import { ssAuthTokenReplace }           from 'actions/server';
+
 
 const isApiRequest = (url) => url.match(getApiUrl());
 
@@ -21,9 +24,14 @@ export function addAuthorizationHeader(accessToken, headers) {
 
 function getAuthHeaders(url) {
   if (isApiRequest(url)) {
-    // to make isomorphic: retrieve from currentSettings
-
-    const currentHeaders = retrieveData(SAVED_CREDS_KEY) || {};
+    let currentHeaders = {};
+    
+    if (getCurrentSettings().isServer) {
+      currentHeaders = getCurrentSettings().headers;
+    } else {
+      currentHeaders = retrieveData(SAVED_CREDS_KEY) || currentHeaders;
+    }
+    
     const nextHeaders    = {};
 
     nextHeaders["If-Modified-Since"] = "Mon, 26 Jul 1997 05:00:00 GMT";
@@ -43,15 +51,19 @@ function getAuthHeaders(url) {
 }
 
 function updateAuthCredentials(resp) {
-  // to make isomorphic pass dispatch here somehow and ssupdate
-
   if (isApiRequest(resp.url)) {
     const oldHeaders = resp.headers;
 
     if (!areHeadersBlank(oldHeaders)) {
       const newHeaders = parseHeaders(oldHeaders);
 
-      persistData(SAVED_CREDS_KEY, newHeaders);
+      if (getCurrentSettings().isServer) {
+        getCurrentSettings().headers = newHeaders;
+
+        getCurrentSettings().dispatch(ssAuthTokenReplace({ headers: newHeaders }));
+      } else {
+        persistData(SAVED_CREDS_KEY, newHeaders);
+      }
     }
   }
 

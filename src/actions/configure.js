@@ -3,7 +3,7 @@ import { authenticateStart, authenticateComplete, authenticateError } from './au
 import { ssAuthTokenUpdate }                                          from './server';
 
 import { applyConfig, initSettings }                                  from 'utils/client-settings';
-import { destroySession }                                             from 'utils/session-storage';
+import { destroySession, setCurrentSettings }                         from 'utils/session-storage';
 import verifyAuth                                                     from 'utils/verify-auth';
 import getRedirectInfo                                                from 'utils/parse-url';
 import { areHeadersBlank }                                            from 'utils/headers';
@@ -21,7 +21,7 @@ export function configure(settings = {}) {
     let promise;
 
     if (settings.isServer) {
-      initSettings(settings);
+      initSettings(assign({}, settings, { dispatch }));
 
       promise = verifyAuth(settings)
         .then(({ user, headers }) => {
@@ -35,22 +35,18 @@ export function configure(settings = {}) {
           return Promise.reject({ reason });
         });
     } else {
-      const tokenBridge = document.getElementById('token-bridge');
+      settings = initSettings(settings);
 
-      if (tokenBridge) {
-        const rawServerCreds = tokenBridge.innerHTML;
-        if (rawServerCreds) {
-          const serverCreds = JSON.parse(rawServerCreds);
+      const initialState  = window[settings.reduxInitialState];
+      const { headers }   = initialState.auth.server;
+      const user          = initialState.auth.user.attributes;
 
-          const { headers, user } = serverCreds;
+      if (user && headers) {
+        dispatch(authenticateComplete(user));
 
-          if (user) {
-            dispatch(authenticateComplete(user));
-            settings.initialCredentials = serverCreds;
-          }
+        settings.initialCredentials = { user, headers };
 
-          dispatch(ssAuthTokenUpdate({ user, headers }));
-        }
+        dispatch(ssAuthTokenUpdate({ user, headers }));
       }
 
       const { authRedirectPath, authRedirectHeaders } = getRedirectInfo(window.location);

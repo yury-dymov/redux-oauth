@@ -14,6 +14,7 @@ export const defaultSettings = {
   cookieExpiry:       14,
   cookiePath:         '/',
   initialCredentials: null,
+  reduxInitialState:  '__INITIAL_STATE__',
 
   tokenFormat: {
     'access-token': '{{ access-token }}',
@@ -25,7 +26,11 @@ export const defaultSettings = {
 };
 
 export function initSettings(settings) {
-  setCurrentSettings(assign({}, defaultSettings, settings));
+  const mergedSettings = assign({}, defaultSettings, settings);
+
+  setCurrentSettings(mergedSettings);
+
+  return mergedSettings;
 }
 
 export function applyConfig({ settings = {} }) {

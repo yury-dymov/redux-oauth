@@ -1,11 +1,12 @@
 import fetch                              from 'isomorphic-fetch';
 import cookie                             from 'cookie';
 import url                                from 'url';
+import assign from 'lodash/assign';
 
 import getRedirectInfo                    from './parse-url';
 import { addAuthorizationHeader }         from './fetch';
 import { parseHeaders,areHeadersBlank }   from './headers'
-import { getTokenValidationPath }         from './session-storage';
+import { getTokenValidationPath, getCurrentSettings, setCurrentSettings }         from './session-storage';
 
 export function fetchToken({ cookies, currentLocation } ) {
   const { authRedirectHeaders } = getRedirectInfo(url.parse(currentLocation));
@@ -27,6 +28,12 @@ export function fetchToken({ cookies, currentLocation } ) {
         return reject({ reason: 'No creds' });
       }
 
+      const settings = getCurrentSettings();
+
+      if (settings.isServer) {
+        setCurrentSettings(assign({}, settings, { headers }));
+      }
+
       const validationUrl = `${getTokenValidationPath()}?unbatch=true`;
 
       let newHeaders;
@@ -35,6 +42,10 @@ export function fetchToken({ cookies, currentLocation } ) {
         headers: addAuthorizationHeader(headers['access-token'], headers)
       }).then((resp) => {
         newHeaders = parseHeaders(resp.headers);
+
+        if (settings.isServer) {
+          setCurrentSettings(assign({}, settings, { headers: newHeaders }));
+        }
 
         return resp.json();
       }).then((json) => {
