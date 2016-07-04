@@ -4,26 +4,6 @@ import keys               from 'lodash/keys';
 
 import { getTokenFormat } from './session-storage';
 
-export function normalizeTokenKeys(params) {
-  if (params.token) {
-    params['access-token'] = params.token;
-    delete params.token;
-  }
-  
-  if (params.auth_token) {
-    params['access-token'] = params.auth_token;
-    delete params.auth_token;
-  }
-  
-  if (params.client_id) {
-    params.client = params.client_id;
-    delete params.client_id;
-  }
-  
-  return params;
-};
-
-
 const getAnchorSearch = (location) => {
   const rawAnchor = location.anchor || ''; 
   const arr       = rawAnchor.split('?');
@@ -65,7 +45,7 @@ const buildCredentials = (location, providedKeys) => {
 
   keys(providedKeys).forEach((key) => authHeaders[key] = params[key]);
 
-  return normalizeTokenKeys(authHeaders);
+  return authHeaders;
 };
 
 

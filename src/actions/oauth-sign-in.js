@@ -1,5 +1,5 @@
 import { SAVED_CREDS_KEY }                      from 'utils/constants';
-import { getAllParams, normalizeTokenKeys }     from 'utils/parse-url';
+import { getAllParams }                         from 'utils/parse-url';
 import { getOAuthUrl }                          from 'utils/session-storage';
 import { getTokenValidationPath, persistData }  from 'utils/session-storage';
 import { parseResponse }                        from 'utils/handle-fetch-response';
@@ -25,7 +25,7 @@ function listenForCredentials(popup, provider, resolve, reject) {
 
   if (creds && creds.uid) {
     popup.close();
-    persistData(SAVED_CREDS_KEY, normalizeTokenKeys(creds));
+    persistData(SAVED_CREDS_KEY, creds);
     fetch(getTokenValidationPath())
       .then(parseResponse)
       .then(({data}) => resolve(data))
@@ -52,8 +52,8 @@ export function oAuthSignInStart(provider) {
 export function oAuthSignInComplete(user) {
   return { type: OAUTH_SIGN_IN_COMPLETE, user };
 }
-export function oAuthSignInError(errors) {
-  return { type: OAUTH_SIGN_IN_ERROR, errors };
+export function oAuthSignInError(provider, errors) {
+  return { type: OAUTH_SIGN_IN_ERROR, provider, errors };
 }
 export function oAuthSignIn({ provider, params }) {
   return dispatch => {
@@ -63,6 +63,6 @@ export function oAuthSignIn({ provider, params }) {
 
     return authenticate({ provider, url})
       .then(user => dispatch(oAuthSignInComplete(user)))
-      .catch(({ errors }) => dispatch(oAuthSignInError(errors)));
+      .catch(({ errors }) => dispatch(oAuthSignInError(provider, errors)));
   };
 }

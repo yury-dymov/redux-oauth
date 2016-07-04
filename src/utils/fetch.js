@@ -8,7 +8,8 @@ import {
   persistData,
   getTokenFormat 
 }                                       from './session-storage';
-import { parseHeaders,areHeadersBlank } from './headers'
+import { parseHeaders,areHeadersBlank } from './headers';
+import { getAccessToken }               from './client-settings';
 
 import keys                             from 'lodash/keys';
 
@@ -35,7 +36,7 @@ function getAuthHeaders(url) {
       }
     });
 
-    return addAuthorizationHeader(currentHeaders['access-token'], nextHeaders);
+    return addAuthorizationHeader(getAccessToken(currentHeaders), nextHeaders);
   } else {
     return {};
   }

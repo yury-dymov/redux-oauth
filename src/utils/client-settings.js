@@ -45,3 +45,11 @@ export function applyConfig({ settings = {} }) {
 
   return Promise.reject({ reason: 'No credentials.' })
 }
+
+export function getAccessToken(headers) {
+  if (headers.get && typeof headers.get === 'function') {
+    return headers.get('access-token');
+  }
+
+  return headers['access-token'];
+}
