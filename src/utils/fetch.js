@@ -32,7 +32,7 @@ function getAuthHeaders(url) {
       currentHeaders = retrieveData(SAVED_CREDS_KEY) || currentHeaders;
     }
     
-    const nextHeaders    = {};
+    const nextHeaders = {};
 
     nextHeaders["If-Modified-Since"] = "Mon, 26 Jul 1997 05:00:00 GMT";
 
@@ -44,10 +44,12 @@ function getAuthHeaders(url) {
       }
     });
 
-    return addAuthorizationHeader(getAccessToken(currentHeaders), nextHeaders);
-  } else {
-    return {};
+    if(!areHeadersBlank(currentHeaders)) {
+      return addAuthorizationHeader(getAccessToken(currentHeaders), nextHeaders);
+    }
   }
+  
+  return {};
 }
 
 function updateAuthCredentials(resp) {
@@ -56,7 +58,6 @@ function updateAuthCredentials(resp) {
 
     if (!areHeadersBlank(oldHeaders)) {
       const newHeaders = parseHeaders(oldHeaders);
-
       if (getCurrentSettings().isServer) {
         getCurrentSettings().headers = newHeaders;
 

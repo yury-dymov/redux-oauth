@@ -1,7 +1,7 @@
 import React, { PropTypes, Component }  from 'react';
 import { connect }                      from 'react-redux';
 
-import ButtonLoader                     from './ButtonLoader';
+import ButtonLoader                     from 'react-bootstrap-button-loader';
 
 import { oAuthSignIn }                  from 'actions/oauth-sign-in';
 

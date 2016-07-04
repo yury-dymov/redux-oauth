@@ -1,6 +1,6 @@
 import React, { PropTypes, Component }  from 'react';
 
-import ButtonLoader                     from './ButtonLoader';
+import ButtonLoader                     from 'react-bootstrap-button-loader';
 
 import { connect }                      from 'react-redux';
 import { signOut }                      from 'actions/sign-out';

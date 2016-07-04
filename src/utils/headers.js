@@ -33,14 +33,13 @@ export function areHeadersBlank(headers) {
   if (!headers) {
     return true;
   }
-
+  
   const tokenFormat = getTokenFormat();
   const allKeys     = keys(tokenFormat);
   const isHeaders   = headers.constructor.name === 'Headers';
 
-
   for (let i = 0; i < allKeys.length; ++i) {
-    const value = isHeaders ? headers.has([allKeys[i]]) : typeof headers[allKeys[i]] !== 'undefined';
+    const value = isHeaders ? headers.has(allKeys[i]) : typeof headers[allKeys[i]] !== 'undefined';
 
     if (value) {
       return false;
