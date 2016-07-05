@@ -50,7 +50,7 @@ export function fetchToken({ cookies, currentLocation } ) {
         return resp.json();
       }).then((json) => {
         if (json.success) {
-          return resolve({ headers:  newHeaders, user: json.data });
+          return resolve({ headers: newHeaders, user: json.data });
         } else {
           return reject({ reason: json.errors });
         }
