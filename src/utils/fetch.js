@@ -31,10 +31,14 @@ function getAuthHeaders(url) {
     } else {
       currentHeaders = retrieveData(SAVED_CREDS_KEY) || currentHeaders;
     }
-    
+
     const nextHeaders = {};
 
-    nextHeaders["If-Modified-Since"] = "Mon, 26 Jul 1997 05:00:00 GMT";
+    nextHeaders['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+
+    if (typeof currentHeaders === 'undefined') {
+      return nextHeaders;
+    }
 
     keys(getTokenFormat()).forEach((key) => {
       const value = currentHeaders[key];
