@@ -1,6 +1,18 @@
 # redux-oauth
 Bearer token-based authentication library with omniauth support for redux applications
 
+# Full example
+### Universal / Isomorphic use-case
+[Live demo](https://yury-dymov.github.io/redux-oauth-client-demo)
+[Source code](https://github.com/yury-dymov/redux-oauth-demo)
+
+### Client-side only
+[Live demo](https://yury-dymov.github.io/redux-oauth-client-demo)
+[Source code](https://github.com/yury-dymov/redux-oauth-client-demo)
+
+### Backend 
+[Backend source code](https://github.com/yury-dymov/redux-oauth-backend-demo)
+
 # Notes on migration from 1.x version
 First version is based and fully compatible with [Redux-Auth](https://github.com/lynndylanhurley/redux-auth). Support is discontinued.
 
@@ -114,18 +126,6 @@ app.use((req, res) => {
     })
 }
 ```
-
-# Full example
-### Universal / Isomorphic use-case
-[Live demo](https://yury-dymov.github.io/redux-oauth-client-demo)
-[Source code](https://github.com/yury-dymov/redux-oauth-demo)
-
-### Client-side only
-[Live demo](https://yury-dymov.github.io/redux-oauth-client-demo)
-[Source code](https://github.com/yury-dymov/redux-oauth-client-demo)
-
-### Backend 
-[Backend source code](https://github.com/yury-dymov/redux-oauth-backend-demo)
 
 # Email-password authentication and other use-cases
 I wanted to make library as light-weight as possible. Also many folks have very different use-cases so it is hard to satisfy everyone. Therefore it is considered that everyone can easily implement methods they need themselves.
