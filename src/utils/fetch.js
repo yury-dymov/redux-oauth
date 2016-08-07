@@ -1,87 +1,28 @@
-import originalFetch                    from 'isomorphic-fetch';
-import assign                           from 'lodash/assign';
-import keys                             from 'lodash/keys';
+import originalFetch                                          from 'isomorphic-fetch';
+import assign                                                 from 'lodash/assign';
+import { parseHeaders, getHeaders, prepareHeadersForFetch }   from 'utils/headers';
+import { updateHeaders }                                      from 'actions/headers';
+import { getSettings }                                        from 'models/settings';
 
-import { SAVED_CREDS_KEY }              from './constants';
-import {
-  getApiUrl,
-  retrieveData,
-  persistData,
-  getCurrentSettings,
-  getTokenFormat 
-}                                       from './session-storage';
-import { parseHeaders,areHeadersBlank } from './headers';
-import { getAccessToken }               from './client-settings';
+export default function (url, options = {}) {
+  return (dispatch, getState) => {
+    const state                     = getState();
+    const { tokenFormat, backend }  = getSettings(state);
 
-import { ssAuthTokenReplace }           from 'actions/server';
-
-
-const isApiRequest = (url) => url.match(getApiUrl());
-
-export function addAuthorizationHeader(accessToken, headers) {
-  return assign({}, headers, { Authorization: `Bearer ${accessToken}` });
-}
-
-function getAuthHeaders(url) {
-  if (isApiRequest(url)) {
-    let currentHeaders = {};
-    
-    if (getCurrentSettings().isServer) {
-      currentHeaders = getCurrentSettings().headers;
-    } else {
-      currentHeaders = retrieveData(SAVED_CREDS_KEY) || currentHeaders;
+    if (!url.match(backend.apiUrl)) {
+      return originalFetch(url, options)
+        .then(resp => Promise.resolve(resp))
+        .catch(err => Promise.reject(err));
     }
 
-    const nextHeaders = {};
+    return originalFetch(url, assign({}, options, { headers: prepareHeadersForFetch(getHeaders(state), tokenFormat) }))
+      .then((resp) => {
+        const headers = parseHeaders(resp.headers, tokenFormat);
 
-    nextHeaders['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+        dispatch(updateHeaders(headers));
 
-    if (typeof currentHeaders === 'undefined') {
-      return nextHeaders;
-    }
-
-    keys(getTokenFormat()).forEach((key) => {
-      const value = currentHeaders[key];
-
-      if (typeof value !== 'undefined') {
-        nextHeaders[key] = currentHeaders[key];
-      }
-    });
-
-    if(!areHeadersBlank(currentHeaders)) {
-      return addAuthorizationHeader(getAccessToken(currentHeaders), nextHeaders);
-    }
-  }
-  
-  return {};
-}
-
-function updateAuthCredentials(resp) {
-  if (isApiRequest(resp.url)) {
-    const oldHeaders = resp.headers;
-
-    if (!areHeadersBlank(oldHeaders)) {
-      const newHeaders = parseHeaders(oldHeaders);
-      if (getCurrentSettings().isServer) {
-        getCurrentSettings().headers = newHeaders;
-
-        getCurrentSettings().dispatch(ssAuthTokenReplace({ headers: newHeaders }));
-      } else {
-        persistData(SAVED_CREDS_KEY, newHeaders);
-      }
-    }
-  }
-
-  return resp;
-}
-
-export default function(url, options={}) {
-  if (!options.headers) {
-    options.headers = {}
-  }
-
-  assign(options.headers, getAuthHeaders(url));
-
-  return originalFetch(url, options)
-    .then(resp => updateAuthCredentials(resp));
+        return Promise.resolve(resp);
+      })
+      .catch(err => Promise.reject(err));
+  };
 }

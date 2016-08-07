@@ -1,10 +1,10 @@
-import Immutable                                        from 'immutable';
-import { createReducer }                                from 'redux-immutablejs';
+import Immutable                                      from 'immutable';
+import { createReducer }                              from 'redux-immutablejs';
 
-import { SIGN_OUT_COMPLETE, SIGN_OUT_ERROR }            from 'actions/sign-out';
-import { OAUTH_SIGN_IN_COMPLETE }                       from 'actions/oauth-sign-in';
-import { AUTHENTICATE_COMPLETE, AUTHENTICATE_FAILURE }  from 'actions/authenticate';
-import { SS_AUTH_TOKEN_UPDATE}                          from 'actions/server';
+import { AUTHENTICATE_COMPLETE, AUTHENTICATE_ERROR }  from 'actions/authenticate';
+import { OAUTH_SIGN_IN_COMPLETE }                     from 'actions/oauthSignIn';
+
+import { SIGN_OUT }                                   from 'actions/signOut';
 
 const initialState = Immutable.fromJS({
   attributes: null,
@@ -22,15 +22,7 @@ export default createReducer(initialState, {
     isSignedIn: true
   }),
 
-  [SS_AUTH_TOKEN_UPDATE]: (state, { user }) => {
-    return state.merge({
-      isSignedIn: !!user,
-      attributes: user
-    });
-  },
+  [AUTHENTICATE_ERROR]:   state => state.merge(initialState),
 
-  [AUTHENTICATE_FAILURE]:    state => state.merge(initialState),
-
-  [SIGN_OUT_COMPLETE]:                   state => state.merge(initialState),
-  [SIGN_OUT_ERROR]:                      state => state.merge(initialState)
+  [SIGN_OUT]: () => initialState
 });

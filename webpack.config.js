@@ -9,7 +9,7 @@ module.exports = {
   output:  {
     path:          path.join(__dirname, 'dist'),
     filename:      'bundle.js',
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'umd'
   },
   externals: [nodeExternals()],
   plugins: [
@@ -23,7 +23,6 @@ module.exports = {
   ],
   module:  {
     loaders: [
-      { include: /\.json$/, loader: 'json' },
       { include: /\.js$/, loader: 'babel', exclude: /node_modules/ }
     ]
   },

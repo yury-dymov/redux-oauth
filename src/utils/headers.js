@@ -1,19 +1,95 @@
-import { getTokenFormat } from './session-storage';
-import keys               from 'lodash/keys';
-import isArray            from 'lodash/isArray';
+import assign                         from 'lodash/assign';
+import keys                           from 'lodash/keys';
+import isArray                        from 'lodash/isArray';
 
-export function parseHeaders(headers) {
+import Cookies                        from 'js-cookie';
+
+import { getHeaders as _getHeaders }  from 'models/headers';
+import { getSettings }                from 'models/settings';
+
+function evalHeader(expression, headers) {
+  try {
+    const preprocessed = expression.trim();
+
+    if (preprocessed.length > 1 && preprocessed[0] === '{' && preprocessed[preprocessed.length - 1] === '}') {
+      return preprocessed.substr(1, preprocessed.length - 2).replace(/\{(.*?)}/g, (...m) => {
+        const header = headers[m[1].trim()];
+
+        if (!header) {
+          throw 'required values missing';
+        }
+
+        return header;
+      });
+    }
+
+    return expression;
+  } catch (ex) {
+    return null;
+  }
+}
+
+export function prepareHeadersForFetch(headers, tokenFormat) {
+  const fetchHeaders  = assign({}, headers, { 'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT' });
+
+  keys(tokenFormat).forEach(key => {
+    const defaultValue = tokenFormat[key];
+
+    if (defaultValue && !fetchHeaders[key]) {
+      const evaluatedHeader = evalHeader(defaultValue, headers);
+
+      if (evaluatedHeader) {
+        fetchHeaders[key] = evaluatedHeader;
+      }
+    }
+  });
+
+  return fetchHeaders;
+/*
+  if (header['access-token']) {
+    return assign({}, header, { Authorization: `Bearer ${header['access-token']}` });
+  }
+
+  return header;
+  */
+}
+
+export function getHeaders(state) {
+  if (!state || state === undefined) {
+    return {};
+  }
+
+  const { cookieOptions, tokenFormat }  = getSettings(state);
+  const ret                             = _getHeaders(state);
+
+  if (!areHeadersBlank(ret, tokenFormat)) {
+    return ret;
+  }
+
+  try {
+    return JSON.parse(Cookies.get(cookieOptions.key) || '{}');
+  } catch (ex) {
+    return {};
+  }
+}
+
+export function parseHeaders(headers, tokenFormat) {
   if (!headers) {
-    return;
+    return {};
   }
 
   const newHeaders  = {};
-  const tokenFormat = getTokenFormat();
+
   let blankHeaders  = true;
-  const isHeaders   = headers.constructor.name === 'Headers';
 
   keys(tokenFormat).forEach((key) => {
-    newHeaders[key] = isHeaders ? headers.get(key) : headers[key];
+    if (headers[key] === undefined) {
+      if (headers.get && headers.get(key)) {
+        newHeaders[key] = headers.get(key);
+      }
+    } else {
+      newHeaders[key] = headers[key];
+    }
 
     if (newHeaders[key]) {
       if (isArray(newHeaders[key])) {
@@ -27,19 +103,20 @@ export function parseHeaders(headers) {
   if (!blankHeaders) {
     return newHeaders;
   }
+
+  return {};
 }
 
-export function areHeadersBlank(headers) {
+export function areHeadersBlank(headers, tokenFormat) {
   if (!headers) {
     return true;
   }
-  
-  const tokenFormat = getTokenFormat();
-  const allKeys     = keys(tokenFormat);
-  const isHeaders   = headers.constructor.name === 'Headers';
+
+  const allKeys = keys(tokenFormat);
 
   for (let i = 0; i < allKeys.length; ++i) {
-    const value = isHeaders ? headers.has(allKeys[i]) : typeof headers[allKeys[i]] !== 'undefined';
+    const key   = allKeys[i];
+    const value = headers[key] === undefined ? (headers.has && headers.has(key)) : true;
 
     if (value) {
       return false;

@@ -13,38 +13,37 @@ function getPopupOffset({ width, height }) {
 function getPopupSize(provider) {
   switch (provider) {
     case 'facebook':
-      return {width: 580, height: 400};
+      return { width: 580, height: 400 };
 
     case 'google':
-      return {width: 452, height: 633};
+      return { width: 452, height: 633 };
 
     case 'github':
-      return {width: 1020, height: 618};
+      return { width: 1020, height: 618 };
 
     case 'linkedin':
-      return {width: 527, height: 582};
+      return { width: 527, height: 582 };
 
     case 'twitter':
-      return {width: 495, height: 645};
+      return { width: 495, height: 645 };
 
     case 'live':
-      return {width: 500, height: 560};
+      return { width: 500, height: 560 };
 
     case 'yahoo':
-      return {width: 559, height: 519};
+      return { width: 559, height: 519 };
 
     default:
-      return {width: 1020, height: 618};
+      return { width: 1020, height: 618 };
   }
 }
 
 function getPopupDimensions(provider) {
-  const { width, height}  = getPopupSize(provider);
-  const { top, left}      = getPopupOffset({ width, height });
+  const { width, height }  = getPopupSize(provider);
+  const { top, left }      = getPopupOffset({ width, height });
 
   return `width=${width},height=${height},top=${top},left=${left}`;
 }
 
-const openPopup = (provider, url, name) => window.open(url, name, `${settings},${getPopupDimensions(provider)}`);
+export default (provider, url, name) => window.open(url, name, `${settings},${getPopupDimensions(provider)}`);
 
-export default openPopup;
