@@ -4,10 +4,12 @@ Bearer token-based authentication library with omniauth support for redux applic
 # Full example
 ### Universal / Isomorphic use-case
 [Live demo](https://yury-dymov.github.io/redux-oauth-client-demo)
+
 [Source code](https://github.com/yury-dymov/redux-oauth-demo)
 
 ### Client-side only
 [Live demo](https://yury-dymov.github.io/redux-oauth-client-demo)
+
 [Source code](https://github.com/yury-dymov/redux-oauth-client-demo)
 
 ### Backend 
