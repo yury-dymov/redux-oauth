@@ -6,6 +6,7 @@ import tokenFormat                                  from 'defaults/tokenFormat';
 import cookieOptions                                from 'defaults/cookieOptions';
 
 import assign                                       from 'lodash/assign';
+import keys                                         from 'lodash/keys';
 
 export const AUTH_INIT_SETTINGS = 'AUTH_INIT_SETTINGS';
 
@@ -13,10 +14,22 @@ function initSettings(config) {
   return { type: AUTH_INIT_SETTINGS, config };
 }
 
+function preprocessTokenFormat(tf) {
+  if (!tf || tf === undefined) {
+    return null;
+  }
+
+  const ret = {};
+
+  keys(tf).forEach(k => ret[k.toLowerCase()] = tf[k]);
+
+  return ret;
+}
+
 function mergeSettings(settings) {
   return  {
     backend:        assign({}, backend, settings.backend),
-    tokenFormat:    settings.tokenFormat || tokenFormat,
+    tokenFormat:    preprocessTokenFormat(settings.tokenFormat) || tokenFormat,
     cookieOptions:  assign({}, cookieOptions, settings.cookieOptions),
     cookies:        settings.cookies
   };

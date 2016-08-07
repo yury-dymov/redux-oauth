@@ -3,7 +3,7 @@ Bearer token-based authentication library with omniauth support for redux applic
 
 # Full example
 ### Universal / Isomorphic use-case
-[Live demo](https://redux-oauth-demo.heroku.com)
+[Live demo](https://redux-oauth-demo.herokuapp.com)
 
 [Source code](https://github.com/yury-dymov/redux-oauth-demo)
 

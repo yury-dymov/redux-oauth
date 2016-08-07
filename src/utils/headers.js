@@ -13,7 +13,7 @@ function evalHeader(expression, headers) {
 
     if (preprocessed.length > 1 && preprocessed[0] === '{' && preprocessed[preprocessed.length - 1] === '}') {
       return preprocessed.substr(1, preprocessed.length - 2).replace(/\{(.*?)}/g, (...m) => {
-        const header = headers[m[1].trim()];
+        const header = headers[m[1].trim().toLowerCase()];
 
         if (!header) {
           throw 'required values missing';
