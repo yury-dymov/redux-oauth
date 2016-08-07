@@ -3,7 +3,7 @@ Bearer token-based authentication library with omniauth support for redux applic
 
 # Full example
 ### Universal / Isomorphic use-case
-[Live demo](https://yury-dymov.github.io/redux-oauth-client-demo)
+[Live demo](https://redux-oauth-demo.heroku.com)
 
 [Source code](https://github.com/yury-dymov/redux-oauth-demo)
 
@@ -22,9 +22,9 @@ Second version is more simple to configure and more stable. All React Components
 
 # Features
 * Implements Bearer token-based authentication for your application to talk to 3d party APIs
-* Provides universal fetch method for any HTTP/HTTPS calls both client and server side
+* Provides universal / isomorphic fetch method for any HTTP/HTTPS requests
 * Supports OAuth2
-* Supports server-side rendering to make users and search engines happy. This means that page, which require several API requests, can be fully or partly rendered on the server first
+* Supports server-side rendering to make users and search engines happy. This means that page, which require several API requests, can be fully or partly rendered on the server side first
 
 # Configuration
 ### Universal / Isomorphic use-case
