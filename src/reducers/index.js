@@ -1,4 +1,5 @@
 import { combineReducers }  from 'redux-immutablejs';
+import Immutable            from "immutable";
 
 import authentication       from './authenticate';
 import user                 from './user';
@@ -7,7 +8,7 @@ import headers              from './headers';
 import signOut              from './signOut';
 import config               from './config';
 
-export default combineReducers({
+const reducer = combineReducers({
   signOut,
   authentication,
   oAuthSignIn,
@@ -15,3 +16,5 @@ export default combineReducers({
   user,
   config
 });
+
+export default (state = {}, action) => reducer(Immutable.fromJS(state), action);
