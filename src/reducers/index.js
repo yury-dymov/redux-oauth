@@ -17,4 +17,10 @@ const reducer = combineReducers({
   config
 });
 
-export default (state = {}, action) => reducer(Immutable.fromJS(state), action);
+export default (state = {}, action) => {
+  if (!Immutable.Iterable.isIterable(state)) {
+    return reducer(Immutable.fromJS(state), action);
+  }
+
+  return reducer(state, action);
+}
