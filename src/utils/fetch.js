@@ -1,8 +1,14 @@
-import originalFetch                                          from 'isomorphic-fetch';
-import assign                                                 from 'lodash/assign';
-import { parseHeaders, getHeaders, prepareHeadersForFetch }   from 'utils/headers';
-import { updateHeaders }                                      from 'actions/headers';
-import { getSettings }                                        from 'models/settings';
+import originalFetch          from 'isomorphic-fetch';
+import assign                 from 'lodash/assign';
+import { updateHeaders }      from 'actions/headers';
+import { getSettings }        from 'models/settings';
+
+import {
+  parseHeaders,
+  getHeaders,
+  prepareHeadersForFetch,
+  areHeadersBlank
+}                             from 'utils/headers';
 
 export default function (url, options = {}) {
   return (dispatch, getState) => {
@@ -19,7 +25,9 @@ export default function (url, options = {}) {
       .then((resp) => {
         const headers = parseHeaders(resp.headers, tokenFormat);
 
-        dispatch(updateHeaders(headers));
+        if (!areHeadersBlank(headers, tokenFormat)) {
+          dispatch(updateHeaders(headers));
+        }
 
         return Promise.resolve(resp);
       })

@@ -13,6 +13,7 @@ export function evalHeader(expression, headers) {
 
     if (preprocessed.length > 1 && preprocessed[0] === '{' && preprocessed[preprocessed.length - 1] === '}') {
       let ret = null;
+
       try {
         ret = preprocessed.substr(1, preprocessed.length - 2).replace(/\{(.*?)}/g, (...m) => {
           const header = headers[m[1].trim().toLowerCase()];

@@ -1,5 +1,5 @@
 import { combineReducers }  from 'redux-immutablejs';
-import Immutable            from "immutable";
+import Immutable            from 'immutable';
 
 import authentication       from './authenticate';
 import user                 from './user';
@@ -23,4 +23,4 @@ export default (state = {}, action) => {
   }
 
   return reducer(state, action);
-}
+};

@@ -25,7 +25,13 @@ export function signOut() {
     const { backend } = getSettings(getState());
 
     dispatch(signOutStart());
-    dispatch(updateHeaders({}));
+    dispatch(updateHeaders());
+
+    if (!backend.signOutPath) {
+      dispatch(signOutComplete());
+
+      return Promise.resolve();
+    }
 
     return dispatch(fetch(backend.signOutPath, { method: 'delete' }))
       .then(parseResponse)

@@ -1,6 +1,6 @@
 import { getSettings }                    from 'models/settings';
 import parseResponse                      from 'utils/parseResponse';
-import { parseHeaders, areHeadersBlank }  from 'utils/headers';
+import { areHeadersBlank }                from 'utils/headers';
 import { updateHeaders }                  from './headers';
 import fetch                              from 'utils/fetch';
 import openPopup                          from 'utils/popup';
@@ -72,9 +72,7 @@ function listenForCredentials({ popup, provider, state, resolve, reject, tokenFo
 
     try {
       creds = getAllParams(popup.location, tokenFormat);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
 
     if (!areHeadersBlank(creds, tokenFormat)) {
       const { tokenValidationPath } = getSettings(state).backend;

@@ -13,9 +13,13 @@ function getBackend(state) {
   state.auth.getIn(['config', 'backend', 'authProviderPaths'])
     .forEach((path, key) => authProviderPaths[key] = `${apiUrl}${path}`);
 
+  const signOutPart = state.auth.getIn(['config', 'backend', 'signOutPath']);
+
+  const signOutPath = signOutPart ? `${apiUrl}${signOutPart}` : null;
+
   return {
     tokenValidationPath: `${apiUrl}${state.auth.getIn(['config', 'backend', 'tokenValidationPath'])}`,
-    signOutPath:         `${apiUrl}${state.auth.getIn(['config', 'backend', 'signOutPath'])}`,
+    signOutPath,
     authProviderPaths,
     apiUrl
   };
