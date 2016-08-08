@@ -13,7 +13,7 @@
     "isomorphic",
     "universal",
     "oauth",
-    "authentification"
+    "authentication"
   ],
   "main": "dist/bundle.js",
   "scripts": {
@@ -24,7 +24,8 @@
     "src",
     "dist",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "webpack.config.js"
   ],
   "dependencies": {
     "immutable": "^3.8.1",

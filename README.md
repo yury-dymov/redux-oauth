@@ -106,7 +106,7 @@ const rootReducer = combineReducers({
     // ... add your own reducers here
 });
 
-app.use((req, res) => {
+app.use((request, response) => {
     const store = createStore(rootReducer, {}, applyMiddleware(thunk));
 
     store.dispatch(initialize({
@@ -124,7 +124,7 @@ app.use((req, res) => {
 
         // We need to update browser headers. User will still have valid session in case javascript fails 
         // 'authHeaders' is default cookieOptions.key value bere. If you redefined it, use your value instead
-        res.cookie('authHeaders', JSON.stringify(getHeaders(store.getState())), { maxAge: ... });
+        response.cookie('authHeaders', JSON.stringify(getHeaders(store.getState())), { maxAge: ... });
     })
 }
 ```
