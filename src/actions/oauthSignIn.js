@@ -4,7 +4,7 @@ import { parseHeaders, areHeadersBlank }  from 'utils/headers';
 import { updateHeaders }                  from './headers';
 import fetch                              from 'utils/fetch';
 import openPopup                          from 'utils/popup';
-import { getAllParams }                   from 'utils/getRedirectInfo';
+import { buildCredentials, getAllParams } from 'utils/getRedirectInfo';
 
 import keys                               from 'lodash/keys';
 
@@ -16,8 +16,8 @@ export function oAuthSignInStart(provider) {
   return { type: OAUTH_SIGN_IN_START, provider };
 }
 
-export function oAuthSignInComplete(user) {
-  return { type: OAUTH_SIGN_IN_COMPLETE, user };
+export function oAuthSignInComplete({ user, provider }) {
+  return { type: OAUTH_SIGN_IN_COMPLETE, user, provider };
 }
 
 export function oAuthSignInError(provider, errors) {
@@ -32,7 +32,7 @@ export function oAuthSignIn({ provider, params }) {
     const url   = getOAuthUrl({ provider, params, state });
 
     return dispatch(authenticate({ provider, url, state }))
-      .then(user => dispatch(oAuthSignInComplete(user)))
+      .then(user => dispatch(oAuthSignInComplete({ user, provider })))
       .catch(({ errors }) => dispatch(oAuthSignInError(provider, errors)));
   };
 }
@@ -71,7 +71,7 @@ function listenForCredentials({ popup, provider, state, resolve, reject, tokenFo
     let creds = null;
 
     try {
-      creds = getAllParams(popup.location);
+      creds = getAllParams(popup.location, tokenFormat);
     } catch (err) {
       console.log(err);
     }
@@ -79,9 +79,9 @@ function listenForCredentials({ popup, provider, state, resolve, reject, tokenFo
     if (!areHeadersBlank(creds, tokenFormat)) {
       const { tokenValidationPath } = getSettings(state).backend;
 
-      popup.close();
+      dispatch(updateHeaders(buildCredentials(popup.location, tokenFormat)));
 
-      dispatch(updateHeaders(parseHeaders(creds, tokenFormat)));
+      popup.close();
 
       return dispatch(fetch(tokenValidationPath))
         .then(parseResponse)

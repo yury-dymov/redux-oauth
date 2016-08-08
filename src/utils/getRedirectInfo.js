@@ -2,6 +2,9 @@ import querystring        from 'querystring';
 import assign             from 'lodash/assign';
 import keys               from 'lodash/keys';
 import omit               from 'lodash/omit';
+import isNull             from 'lodash/isNull';
+
+import { evalHeader }     from './headers';
 
 function getAnchorSearch(location) {
   const rawAnchor = location.anchor || '';
@@ -29,11 +32,21 @@ export function getAllParams(location) {
 }
 
 
-function buildCredentials(location, providedKeys) {
+export function buildCredentials(location, tokenFormat) {
   const params = getAllParams(location);
   const authHeaders = {};
 
-  keys(providedKeys).forEach((key) => authHeaders[key] = params[key]);
+  keys(tokenFormat).forEach((key) => {
+    if (params[key]) {
+      authHeaders[key] = params[key];
+    } else {
+      const computedHeader = evalHeader(tokenFormat[key], params);
+
+      if (!isNull(computedHeader)) {
+        authHeaders[key] = computedHeader;
+      }
+    }
+  });
 
   return authHeaders;
 }
@@ -71,10 +84,8 @@ export default function (currentLocation, tokenFormat) {
     return {};
   }
 
-  const authKeys = keys(tokenFormat);
-
-  const authRedirectHeaders = buildCredentials(currentLocation, authKeys);
-  const authRedirectPath    = getLocationWithoutParams(currentLocation, authKeys);
+  const authRedirectHeaders = buildCredentials(currentLocation, tokenFormat);
+  const authRedirectPath    = getLocationWithoutParams(currentLocation, keys(tokenFormat));
 
   if (authRedirectPath !== currentLocation) {
     return { authRedirectHeaders, authRedirectPath };

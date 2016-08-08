@@ -1,7 +1,7 @@
 {
   "name": "redux-oauth",
-  "description": "Oauth token authentication system for redux.",
-  "version": "2.0.1",
+  "description": "Bearer token-based authentication system for redux with OAuth2 support",
+  "version": "2.0.2",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -54,8 +54,5 @@
   },
   "peerDependencies": {
     "redux": "*"
-  },
-  "engines": {
-    "node": ">=0.10.32"
   }
 }

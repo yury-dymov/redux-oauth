@@ -7,20 +7,27 @@ import Cookies                        from 'js-cookie';
 import { getHeaders as _getHeaders }  from 'models/headers';
 import { getSettings }                from 'models/settings';
 
-function evalHeader(expression, headers) {
+export function evalHeader(expression, headers) {
   try {
     const preprocessed = expression.trim();
 
     if (preprocessed.length > 1 && preprocessed[0] === '{' && preprocessed[preprocessed.length - 1] === '}') {
-      return preprocessed.substr(1, preprocessed.length - 2).replace(/\{(.*?)}/g, (...m) => {
-        const header = headers[m[1].trim().toLowerCase()];
+      let ret = null;
+      try {
+        ret = preprocessed.substr(1, preprocessed.length - 2).replace(/\{(.*?)}/g, (...m) => {
+          const header = headers[m[1].trim().toLowerCase()];
 
-        if (!header) {
-          throw 'required values missing';
-        }
+          if (!header) {
+            throw 'not found';
+          }
 
-        return header;
-      });
+          return header;
+        });
+      } catch (ex) {
+        return null;
+      }
+
+      return ret;
     }
 
     return expression;
@@ -115,10 +122,21 @@ export function areHeadersBlank(headers, tokenFormat) {
   const allKeys = keys(tokenFormat);
 
   for (let i = 0; i < allKeys.length; ++i) {
-    const key   = allKeys[i];
-    const value = headers[key] === undefined ? (headers.has && headers.has(key)) : true;
+    const key = allKeys[i];
 
-    if (value) {
+    let value;
+
+    if (headers[key] === undefined) {
+      if (headers.has && headers.has(key)) {
+        value = headers.get(key);
+      } else {
+        continue;
+      }
+    } else {
+      value = headers[key];
+    }
+
+    if (value && value.toLowerCase() !== (tokenFormat[key] || '').toLocaleLowerCase()) {
       return false;
     }
   }

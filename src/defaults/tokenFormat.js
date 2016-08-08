@@ -1,7 +1,7 @@
 export default {
-  'access-token': null,
+  'access-token': '{{ auth_token }}',
   'token-type':   'Bearer',
-  client:         null,
+  client:         '{{ client_id }}',
   expiry:         null,
   uid:            null,
   authorization:  '{{ token-type } { access-token }}'
