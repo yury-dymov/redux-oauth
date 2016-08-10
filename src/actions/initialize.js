@@ -5,7 +5,7 @@ import backend                                      from 'defaults/backend';
 import tokenFormat                                  from 'defaults/tokenFormat';
 import cookieOptions                                from 'defaults/cookieOptions';
 
-import assign                                       from 'lodash/assign';
+import merge                                        from 'lodash/merge';
 import keys                                         from 'lodash/keys';
 
 export const AUTH_INIT_SETTINGS = 'AUTH_INIT_SETTINGS';
@@ -28,9 +28,9 @@ function preprocessTokenFormat(tf) {
 
 function mergeSettings(settings) {
   return  {
-    backend:        assign({}, backend, settings.backend),
+    backend:        merge({}, backend, settings.backend),
     tokenFormat:    preprocessTokenFormat(settings.tokenFormat) || tokenFormat,
-    cookieOptions:  assign({}, cookieOptions, settings.cookieOptions),
+    cookieOptions:  merge({}, cookieOptions, settings.cookieOptions),
     cookies:        settings.cookies
   };
 }

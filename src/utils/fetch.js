@@ -1,5 +1,5 @@
 import originalFetch          from 'isomorphic-fetch';
-import assign                 from 'lodash/assign';
+import merge                  from 'lodash/merge';
 import { updateHeaders }      from 'actions/headers';
 import { getSettings }        from 'models/settings';
 
@@ -21,7 +21,7 @@ export default function (url, options = {}) {
         .catch(err => Promise.reject(err));
     }
 
-    return originalFetch(url, assign({}, options, { headers: prepareHeadersForFetch(getHeaders(state), tokenFormat) }))
+    return originalFetch(url, merge({}, options, { headers: prepareHeadersForFetch(getHeaders(state), tokenFormat) }))
       .then((resp) => {
         const headers = parseHeaders(resp.headers, tokenFormat);
 
