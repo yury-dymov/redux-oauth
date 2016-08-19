@@ -12,17 +12,17 @@ const initialState = Immutable.fromJS({
 });
 
 export default createReducer(initialState, {
-  [AUTHENTICATE_COMPLETE]: (state, { user }) => state.merge({
+  [AUTHENTICATE_COMPLETE]: (state, { user }) => state.mergeDeep({
     attributes: user,
     isSignedIn: true
   }),
 
-  [OAUTH_SIGN_IN_COMPLETE]: (state, { user }) => state.merge({
+  [OAUTH_SIGN_IN_COMPLETE]: (state, { user }) => state.mergeDeep({
     attributes: user,
     isSignedIn: true
   }),
 
-  [AUTHENTICATE_ERROR]:   state => state.merge(initialState),
+  [AUTHENTICATE_ERROR]:   () => initialState,
 
   [SIGN_OUT]: () => initialState
 });

@@ -8,7 +8,7 @@ import { SIGN_OUT }                           from 'actions/signOut';
 const initialState = Immutable.fromJS({});
 
 export default createReducer(initialState, {
-  [UPDATE_HEADERS]: (state, { headers }) => state.merge(headers),
+  [UPDATE_HEADERS]: (state, { headers }) => state.mergeDeep(headers),
 
   [SIGN_OUT]: () => initialState
 });
