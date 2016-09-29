@@ -12,7 +12,7 @@ Bearer token-based authentication library with omniauth support for redux applic
 
 [Source code](https://github.com/yury-dymov/redux-oauth-client-demo)
 
-### Backend 
+### Backend
 [Backend source code](https://github.com/yury-dymov/redux-oauth-backend-demo)
 
 # Notes on migration from 1.x version
@@ -25,6 +25,75 @@ Second version is more simple to configure and more stable. All React Components
 * Provides universal / isomorphic fetch method for any HTTP/HTTPS requests
 * Supports OAuth2
 * Supports server-side rendering to make users and search engines happy. This means that page, which require several API requests, can be fully or partly rendered on the server side first
+
+## Example
+#### server.js with Express
+```
+import { initialize, authStateReducer, getHeaders } from 'redux-oauth';
+
+// ...
+
+const rootReducer = combineReducers({
+    auth: authStateReducer,
+    // ... add your own reducers here
+});
+
+app.use((request, response) => {
+    const store = createStore(rootReducer, {}, applyMiddleware(thunk));
+
+    store.dispatch(initialize({
+        backend: {
+            apiUrl: 'https://my-super-api.zone',
+            authProviderPaths: {
+                facebook: '/auth/facebook',
+                github: '/auth/github'
+            }
+        },
+        currentLocation: request.url,
+        cookies: request.cookies
+    }).then(() => {
+        // ... do your regular things like routing and rendering
+
+        // We need to update browser headers. User will still have valid session in case javascript fails
+        // 'authHeaders' is default cookieOptions.key value bere. If you redefined it, use your value instead
+        response.cookie('authHeaders', JSON.stringify(getHeaders(store.getState())), { maxAge: ... });
+    })
+}
+```
+
+# Email-password authentication and other use-cases
+I wanted to make library as light-weight as possible. Also many folks have very different use-cases so it is hard to satisfy everyone. Therefore it is considered that everyone can easily implement methods they need themselves.
+
+#### Email-password authentication method example
+
+```
+import { fetch, authenticateStart, authenticateComplete, authenticateError, parseResponse } from 'redux-oauth';
+
+function signIn(email, password) {
+    return dispatch => {
+        dispatch(authenticateStart());
+
+        return dispatch(fetch(yourCustomAuthMethod(email, password)))
+            .then(parseResponse)
+            .then(user => {
+                dispatch(authenticateComplete(user));
+
+                // it is recommended to return resolve or reject for server side rendering case.
+                // It helps to know then all requests are finished and rendering can be performed
+                return Promise.resolve(user);
+            }
+            .catch(error => {
+                if (error.errors) {
+                    dispatch(authenticateError(error.errors));
+                }
+
+                return Promise.reject(error.errors || error);
+            };
+    };
+}
+
+```
+
 
 # Configuration
 ### Universal / Isomorphic use-case
@@ -94,73 +163,6 @@ Authorization - default value: '{{ Token-Type } { Access-Token }}'. This express
 
 Unlike 'backend' and 'cookieOptions' objects if you would like to override tokenFormat, you have to provide whole structure.
 
-## Example
-#### server.js with Express
-```
-import { initialize, authStateReducer } from "redux-auth";
-
-// ...
-
-const rootReducer = combineReducers({
-    auth: authStateReducer,
-    // ... add your own reducers here
-});
-
-app.use((request, response) => {
-    const store = createStore(rootReducer, {}, applyMiddleware(thunk));
-
-    store.dispatch(initialize({
-        backend: {
-            apiUrl: 'https://my-super-api.zone',
-            authProviderPaths: {
-                facebook: '/auth/facebook',
-                github: '/auth/github'
-            }
-        },
-        currentLocation: request.url,
-        cookies: request.cookies
-    }).then(() => {
-        // ... do your regular things like routing and rendering
-
-        // We need to update browser headers. User will still have valid session in case javascript fails 
-        // 'authHeaders' is default cookieOptions.key value bere. If you redefined it, use your value instead
-        response.cookie('authHeaders', JSON.stringify(getHeaders(store.getState())), { maxAge: ... });
-    })
-}
-```
-
-# Email-password authentication and other use-cases
-I wanted to make library as light-weight as possible. Also many folks have very different use-cases so it is hard to satisfy everyone. Therefore it is considered that everyone can easily implement methods they need themselves.
- 
-#### Email-password authentication method example
-
-```
-import { fetch, authenticateStart, authenticateComplete, authenticateError, parseResponse } from 'redux-oauth';
-
-function signIn(email, password) {
-    return dispatch => {
-        dispatch(authenticateStart());
-        
-        return dispatch(fetch(yourCustomAuthMethod(email, password)))
-            .then(parseResponse)
-            .then(user => {
-                dispatch(authenticateComplete(user));
-                
-                // it is recommended to return resolve or reject for server side rendering case. 
-                // It helps to know then all requests are finished and rendering can be performed
-                return Promise.resolve(user);
-            }
-            .catch(error => {
-                if (error.errors) {
-                    dispatch(authenticateError(error.errors));
-                }
-                
-                return Promise.reject(error.errors || error);
-            };
-    };
-}
-
-```
 
 # License
 MIT (c) Yuri Dymov
