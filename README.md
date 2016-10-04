@@ -28,7 +28,7 @@ Second version is more simple to configure and more stable. All React Components
 
 ## Example
 #### server.js with Express
-```
+```javascript
 import { initialize, authStateReducer, getHeaders } from 'redux-oauth';
 
 // ...
@@ -66,7 +66,7 @@ I wanted to make library as light-weight as possible. Also many folks have very 
 
 #### Email-password authentication method example
 
-```
+```javascript
 import { fetch, authenticateStart, authenticateComplete, authenticateError, parseResponse } from 'redux-oauth';
 
 function signIn(email, password) {
