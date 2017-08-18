@@ -144,7 +144,7 @@ key - cookie key for storing authentication headers for persistence, default: 'a
 
 path - cookie path, default: '/'
 
-expire - cookie expiration in days, default: 14
+expires - cookie expiration in days, default: 14
 
 ### tokenFormat
 authentication data structure, which is going back and forth between backend and client

@@ -8,7 +8,7 @@ export function updateHeaders(headers = {}) {
     const { cookieOptions } = getSettings(getState());
 
     Cookies.set(cookieOptions.key, JSON.stringify(headers), {
-      expires: cookieOptions.expire,
+      expires: cookieOptions.expires,
       path: cookieOptions.path
     });
 
