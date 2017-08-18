@@ -28,7 +28,7 @@ function getBackend(state) {
 function cookieOptions(state) {
   return {
     key:    state.auth.getIn(['config', 'cookieOptions', 'key']),
-    expire: state.auth.getIn(['config', 'cookieOptions', 'expire']),
+    expires: state.auth.getIn(['config', 'cookieOptions', 'expires']),
     path:   state.auth.getIn(['config', 'cookieOptions', 'path'])
   };
 }
