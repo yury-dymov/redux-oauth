@@ -25,9 +25,9 @@ export function signOut() {
     const { backend } = getSettings(getState());
 
     dispatch(signOutStart());
-    dispatch(updateHeaders());
 
     if (!backend.signOutPath) {
+      dispatch(updateHeaders());
       dispatch(signOutComplete());
 
       return Promise.resolve();
@@ -36,11 +36,13 @@ export function signOut() {
     return dispatch(fetch(backend.signOutPath, { method: 'delete' }))
       .then(parseResponse)
       .then(() => {
+        dispatch(updateHeaders());
         dispatch(signOutComplete());
 
         return Promise.resolve();
       })
       .catch((er) => {
+        dispatch(updateHeaders());
         dispatch(signOutError(er));
 
         return Promise.reject(er);
