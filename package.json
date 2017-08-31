@@ -1,7 +1,7 @@
 {
   "name": "redux-oauth",
   "description": "Bearer token-based authentication system for redux with OAuth2 support",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "license": "MIT",
   "repository": {
     "type": "git",
