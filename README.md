@@ -1,6 +1,10 @@
 # redux-oauth
 Bearer token-based authentication library with omniauth support for redux applications
 
+[Deprecated] Both `redux-oauth` and original `redux-auth` are not suitable for production usage as they are not capable to correctly process many API requests from one user if they were executed with little or no delay. This is a [devise_token_auth](https://github.com/lynndylanhurley/devise_token_auth) design issue, which is not possible to fix without redisigning almost everything on both backend and frontend sides. 
+
+This package might be still used for Proof-of-Concepts, education and other purposes.
+
 # Full example
 ### Universal / Isomorphic use-case
 [Live demo](https://redux-oauth-demo.herokuapp.com)
